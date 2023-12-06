@@ -25,9 +25,9 @@ impl Game {
         for color_data in arg.split(',') {
             let data: Vec<&str> = color_data.trim().split(' ').collect();
             match (data[0], data[1]) {
-                (n, "red") => {r += n.parse::<usize>().unwrap()}
-                (n, "green") => {g += n.parse::<usize>().unwrap()}
-                (n, "blue") => {b += n.parse::<usize>().unwrap()}
+                (n, "red") => { r += n.parse::<usize>().unwrap() }
+                (n, "green") => { g += n.parse::<usize>().unwrap() }
+                (n, "blue") => { b += n.parse::<usize>().unwrap() }
                 _ => panic!()
             }
         }

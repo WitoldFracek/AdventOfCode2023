@@ -1,8 +1,9 @@
 mod task1;
 mod utils;
 mod task2;
+mod task3;
 
 
 fn main() {
-    task2::solve();
+    task3::solve();
 }
