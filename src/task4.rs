@@ -45,12 +45,6 @@ impl FromStr for Scratchcard {
     }
 }
 
-impl Clone for Scratchcard {
-    fn clone(&self) -> Self {
-        Self::new(self.id, self.wins.clone(), self.guesses.clone())
-    }
-}
-
 pub fn solve() {
     let lines = read_lines("./data/data4.txt");
     let res = lines.iter()
