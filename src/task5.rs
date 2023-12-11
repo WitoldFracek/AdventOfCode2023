@@ -25,6 +25,42 @@ impl RangeMap {
         let d = input - start;
         self.dst.0 + d
     }
+
+    pub fn reverse_map(&self, input: usize) -> usize {
+        let (start, stop) = self.dst;
+        if input < start || input >= stop {
+            return input;
+        }
+        let d = input - start;
+        self.src.0 + d
+    }
+}
+
+#[derive(Copy, Clone, Debug)]
+struct Range {
+    min: usize,
+    max: usize
+}
+
+trait InRange {
+    fn is_in(&self, range: &Range) -> bool;
+}
+
+impl Range {
+    pub fn new(min: usize, max: usize) -> Self {
+        Self { min, max }
+    }
+
+    pub fn contains(&self, value: usize) -> bool {
+        value >= self.min && value < self.max
+    }
+
+}
+
+impl InRange for usize {
+    fn is_in(&self, range: &Range) -> bool {
+        range.contains(*self)
+    }
 }
 
 #[derive(Debug)]
@@ -49,14 +85,24 @@ impl  RangeMapModule {
         orig
     }
 
+    pub fn reverse_map(&self, item: usize) -> usize {
+        self.seq.iter()
+            .rev()
+            .fold(item, |prev, c| c.reverse_map(prev))
+    }
+
     pub fn push(&mut self, range: RangeMap) {
         self.seq.push(range);
     }
 }
 
 pub fn solve() {
-    let lines = read_lines("./data/data5.txt");
+    let lines = read_lines("./data/data5_debug.txt");
+    solve_a(&lines);
+    solve_b(&lines);
+}
 
+fn solve_a(lines: &Vec<String>) {
     let seeds = get_seeds(&lines[0]);
     let maps = get_range_modules(&lines);
     let mut min = usize::MAX;
@@ -70,23 +116,25 @@ pub fn solve() {
         }
     }
     println!("Ver 1: {min}");
+}
 
-    let seeds = get_seeds_range(&lines[0]);
+fn solve_b(lines: &Vec<String>) {
+    let seed_ranges = get_seeds_range(&lines[0]);
     let maps = get_range_modules(&lines);
-    let mut min = usize::MAX;
-    for (i, &seed) in seeds.iter().enumerate() {
-        if i % 1000 == 0 {
-            println!("{}%", i as f64 / seeds.len() as f64 * 100.0);
+    let mut res = usize::MAX;
+    'main: for i in 0..usize::MAX {
+        let mut val = i;
+        for map in maps.iter().rev() {
+            val = map.reverse_map(val);
         }
-        let mut val = seed;
-        for map in &maps {
-            val = map.map(val);
-        }
-        if val < min {
-            min = val;
+        for range in seed_ranges.iter() {
+            if val.is_in(range) {
+                res = i;
+                break 'main
+            }
         }
     }
-    println!("Ver 2: {min}");
+    println!("Ver 2: {res}");
 }
 
 fn get_seeds(input: &str) -> Vec<usize> {
@@ -99,25 +147,25 @@ fn get_seeds(input: &str) -> Vec<usize> {
         .collect()
 }
 
-fn get_seeds_range(input: &str) -> Vec<usize> {
-    let temp = input.split(':')
-        .last()
-        .unwrap()
-        .split(' ')
-        .filter(|&x| !x.is_empty())
-        .map(|x| x.parse::<usize>().unwrap_or_else(|e| {println!("{x}"); panic!()}))
-        .collect::<Vec<usize>>();
+// fn get_min_max(input: &RangeMapModule) -> (usize, usize) {
+//     let mut min = usize::MAX;
+//     let mut max = usize::MIN;
+//     for map in input.seq {
+//         if map.dst.0 < min {
+//             min = map.dst.1;
+//         }
+//         if map.
+//     }
+// }
+
+fn get_seeds_range(input: &str) -> Vec<Range> {
+    let temp = get_seeds(input);
     let mut ret = Vec::new();
     for (i, &start) in temp.iter().enumerate().step_by(2) {
         let len = temp[i+1];
-        println!("{} | {}", i as f64 / temp.len() as f64 * 100.0, len);
-        ret.append(&mut Vec::from_iter(start..(start+len)));
+        ret.push(Range::new(start, start + len));
     }
     ret
-    // println!("Preparing HashSet");
-    // let ret = HashSet::from_iter(ret);
-    // println!("Returning HashSet");
-    // ret
 }
 
 fn get_range_map(line: &str) -> RangeMap {
