@@ -97,7 +97,7 @@ impl  RangeMapModule {
 }
 
 pub fn solve() {
-    let lines = read_lines("./data/data5_debug.txt");
+    let lines = read_lines("./data/data5.txt");
     solve_a(&lines);
     solve_b(&lines);
 }
@@ -119,7 +119,7 @@ fn solve_a(lines: &Vec<String>) {
 }
 
 fn solve_b(lines: &Vec<String>) {
-    let seed_ranges = get_seeds_range(&lines[0]);
+    let seed_ranges = get_seed_ranges(&lines[0]);
     let maps = get_range_modules(&lines);
     let mut res = usize::MAX;
     'main: for i in 0..usize::MAX {
@@ -147,18 +147,7 @@ fn get_seeds(input: &str) -> Vec<usize> {
         .collect()
 }
 
-// fn get_min_max(input: &RangeMapModule) -> (usize, usize) {
-//     let mut min = usize::MAX;
-//     let mut max = usize::MIN;
-//     for map in input.seq {
-//         if map.dst.0 < min {
-//             min = map.dst.1;
-//         }
-//         if map.
-//     }
-// }
-
-fn get_seeds_range(input: &str) -> Vec<Range> {
+fn get_seed_ranges(input: &str) -> Vec<Range> {
     let temp = get_seeds(input);
     let mut ret = Vec::new();
     for (i, &start) in temp.iter().enumerate().step_by(2) {
