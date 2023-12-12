@@ -1,3 +1,4 @@
+use crate::utils::line_to_numbers;
 mod task1;
 mod utils;
 mod task2;

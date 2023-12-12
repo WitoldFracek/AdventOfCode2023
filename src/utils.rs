@@ -1,5 +1,8 @@
+use std::fmt::Debug;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use std::str::FromStr;
+use num::Num;
 
 pub fn read_lines(path: &str) -> Vec<String> {
     let file = match File::open(path) {
@@ -16,3 +19,21 @@ pub fn read_lines(path: &str) -> Vec<String> {
     }
     ret
 }
+
+pub fn line_to_items<T>(line: &str) -> Vec<T> where T: FromStr, <T as FromStr>::Err: Debug {
+    line.split(' ')
+        .filter(|&x| !x.is_empty())
+        .map(|x| x.parse::<T>().unwrap())
+        .collect()
+}
+
+pub fn line_to_numbers<N: Num + FromStr>(line: &str) -> Vec<N> where <N as FromStr>::Err: Debug {
+    line.split(' ')
+        .filter(|x| !x.is_empty())
+        .map(|x| x.parse::<N>().unwrap())
+        .collect()
+}
+
+
+
+
