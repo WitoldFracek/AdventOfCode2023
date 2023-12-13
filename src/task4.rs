@@ -23,7 +23,7 @@ impl Scratchcard {
         let matches_count = self.how_many_matches();
         let mut ret = Vec::new();
         for _ in 0..copies[&self.id] {
-            ret.append(&mut Vec::from_iter(((self.id+1)..=(self.id+matches_count))))
+            ret.append(&mut Vec::from_iter((self.id+1)..=(self.id+matches_count)))
         }
         ret
     }
