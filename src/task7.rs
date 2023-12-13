@@ -2,15 +2,6 @@ use std::cmp::Ordering;
 use std::str::FromStr;
 use crate::utils::{lines_iter};
 use std::collections::{HashMap};
-trait ToCard {
-    type Err;
-    fn into(&self) -> Result<Card, Self::Err>;
-    fn joker_into(&self) -> Result<Card, Self::Err>;
-}
-trait ToHand {
-    type Err;
-    fn into(&self) -> Result<Hand, Self::Err>;
-}
 
 pub fn solve() {
     // solution A
