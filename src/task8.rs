@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use crate::utils::read_lines;
+use crate::utils::{read_lines, lcm};
 use std::collections::HashMap;
 use regex::Regex;
 
@@ -44,28 +44,12 @@ fn solve_b() {
         .filter(|(key, _)| key.ends_with('A'))
         .map(|(key, _)| key)
         .collect::<Vec<&String>>();
-    let mut cycles = Vec::new();
-    for start in starts {
-
-    }
-
-    // let mut res = 0;
-    // for (i, direction) in sequence.chars().cycle().enumerate() {
-    //     if currents.iter().all(|s| s.ends_with('Z')) {
-    //         res = i;
-    //         break;
-    //     }
-    //     currents = currents.into_iter().map(|curr| {
-    //             match direction {
-    //                 'L' => &map.get(curr).unwrap().0,
-    //                 'R' => &map.get(curr).unwrap().1,
-    //                 other => panic!("unrecognised direction '{other}'")
-    //             }
-    //         })
-    //         .collect()
-    //
-    // }
-    println!("Ver 2: {res}");
+    let cycles = starts.into_iter()
+        .map(|s| get_cycle_length(s, &map, &sequence))
+        .collect::<Vec<usize>>();
+    let init = cycles[0];
+    let sol = cycles.into_iter().fold(init, lcm);
+    println!("{sol:?}");
 }
 
 fn extract_key_value(lines: &[String]) -> Vec<(String, String, String)> {
@@ -80,6 +64,17 @@ fn extract_key_value(lines: &[String]) -> Vec<(String, String, String)> {
         .collect()
 }
 
-// fn get_cycle_length(start: &String, map: &HashMap<String, (String, String)>) -> usize {
-//
-// }
+fn get_cycle_length(start: &String, map: &HashMap<String, (String, String)>, sequence: &str) -> usize {
+    let mut current = start;
+    for (i, direction) in sequence.chars().cycle().enumerate() {
+        if current.ends_with('Z') {
+            return i
+        }
+        current = match direction {
+            'L' => &map.get(current).unwrap().0,
+            'R' => &map.get(current).unwrap().1,
+            other => panic!("unknown direction '{other}'")
+        };
+    }
+    panic!("this loop should have never ended")
+}

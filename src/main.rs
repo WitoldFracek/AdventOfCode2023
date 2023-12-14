@@ -10,5 +10,5 @@ mod task7;
 mod task8;
 
 fn main() {
-    task8::solve();
+    task1::solve();
 }

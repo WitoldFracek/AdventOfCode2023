@@ -44,8 +44,12 @@ fn str_to_num(numstr: &str) -> String {
 }
 pub fn solve() {
     let lines = read_lines("./data/data1.txt");
+
+    let res = lines.iter().map(find_number).sum::<i32>();
+    println!("Ver 1: {res}");
+
     let res = lines.iter().map(find_number_ex).sum::<i32>();
-    println!("{}", res);
+    println!("Ver 2: {res}");
 }
 
 fn find_number(line: &String) -> i32 {
@@ -66,18 +70,16 @@ fn find_number_ex(line: &String) -> i32 {
 }
 
 fn find_first_number(line: &str) -> char {
-    *line.chars()
+    line.chars()
         .filter(|c| c.is_numeric())
-        .collect::<Vec<char>>()
-        .first()
+        .next()
         .unwrap()
 }
 
 fn find_last_number(line: &str) -> char {
-    *line.chars()
+    line.chars()
         .filter(|c| c.is_numeric())
         .rev()
-        .collect::<Vec<char>>()
-        .first()
+        .next()
         .unwrap()
 }

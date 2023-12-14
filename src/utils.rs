@@ -50,6 +50,24 @@ pub fn line_to_numbers<N: Num + FromStr>(line: &str) -> Vec<N> where <N as FromS
         .collect()
 }
 
+pub fn lcm<T: Num + Copy>(a: T, b: T) -> T {
+    if a == T::zero() || b == T::zero() {
+        return T::zero();
+    }
+    (a * b) / gcd(a, b)
+}
+
+pub fn gcd<T: Num + Copy>(a: T, b: T) -> T {
+    let mut a = a;
+    let mut b = b;
+    while b != T::zero() {
+        let temp = b;
+        b = a % b;
+        a = temp;
+    }
+    a
+}
+
 
 
 
