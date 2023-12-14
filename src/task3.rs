@@ -169,7 +169,7 @@ fn get_one_gear(index: (usize, usize), schema: &Schema) -> i32 {
     if index.1 > 0 {
         let mut i = index.1 - 1;
         c = schema[index.0][i];
-        while  i >= 0 && c .is_numeric() {
+        while c .is_numeric() {
             number = format!("{c}{number}");
             if i == 0 { break }
             i -= 1;
