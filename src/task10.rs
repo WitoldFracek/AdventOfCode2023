@@ -1,4 +1,3 @@
-use num::integer::div_rem;
 use crate::utils::read_lines;
 
 type PipePlan = Vec<Vec<Option<Pipe>>>;
@@ -113,61 +112,6 @@ fn find_start(plan: &PipePlan) -> (usize, usize) {
     panic!("there is no start (S) pipe in the PipePlan");
 }
 
-fn are_all_pipes_valid(plan: &PipePlan) -> bool {
-    for (y, row) in plan.iter().enumerate() {
-        for (x, &pipe) in row.iter().enumerate() {
-            if !is_pipe_valid(plan, x, y) {
-                return false;
-            }
-        }
-    }
-    true
-}
-
-fn remove_invalid_pies(plan: &PipePlan) -> PipePlan {
-    let mut ret = Vec::new();
-    for (y, row) in plan.iter().enumerate() {
-        let mut temp = Vec::new();
-        for (x, &pipe) in row.iter().enumerate() {
-            // if let Some(p) = pipe {
-            //     println!("{}", p.get_pretty_repr());
-            // } else {
-            //     println!("empty");
-            // }
-            if is_pipe_valid(plan, x, y) {
-                // println!("true");
-                temp.push(pipe);
-            } else {
-                // println!("false");
-                temp.push(None);
-            }
-        }
-        ret.push(temp);
-    }
-    ret
-}
-
-fn is_pipe_valid(plan: &PipePlan, x: usize, y: usize) -> bool {
-    let pipe = plan[x][y];
-    if let None = pipe { return true; }
-    if let Some(Pipe::Start) = pipe { return true; }
-    let pipe = pipe.unwrap();
-    let (check_left, check_right, check_top, check_bottom) = pipe.which_neighbours_check();
-    if check_left {
-        if x == 0 { return false; }
-        if let None = plan[x-1][y] { return false; }
-    }
-    let (l, r, u, d) = pipe.get_neighbours_deltas();
-    println!("{} {} {} {} | {}", l, r, u, d, pipe.get_pretty_repr());
-    println!("{} {}\n", x, y);
-    if l != 0 && x as i32 - l < 0 { return false; }
-    if r != 0 && x + r as usize >= plan[0].len() { return false; }
-    if u != 0 && y as i32 - u < 0 { return false; }
-    if d != 0 && y + d as usize >= plan.len() { return false; }
-    println!("true");
-    true
-}
-
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum Pipe {
     LeftRight,  // -
@@ -189,17 +133,8 @@ impl Pipe {
             'F' => Some(Pipe::RightDown),
             'L' => Some(Pipe::RightUp),
             'S' => Some(Pipe::Start),
-            other => None
+            _ => None
         }
-    }
-
-    fn get_neighbours_deltas(&self) -> (i32, i32, i32, i32) {
-        (
-            if self.has_left() { 1 } else { 0 },
-            if self.has_right() { 1 } else { 0 },
-            if self.has_up() { 1 } else { 0 },
-            if self.has_down() { 1 } else { 0 },
-        )
     }
 
     fn which_neighbours_check(&self) -> (bool, bool, bool, bool) {
